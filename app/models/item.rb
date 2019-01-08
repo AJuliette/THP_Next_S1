@@ -13,7 +13,19 @@
 #
 
 class Item < ApplicationRecord
+  validates :original_price, presence: true
+  validates :discount_percentage, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+
   def price
-    80.00
+    original_price unless has_discount
+    original_price * (1 - (discount_percentage.to_f / 100))
+  end
+
+  def self.average_price
+    sum = 0
+    Item.all.find_each do |i|
+      sum += i.price
+    end
+    sum / Item.count
   end
 end
