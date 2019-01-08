@@ -17,7 +17,25 @@
 									<th></th>
 								</tr>
 							</thead>
-							<tbody>
+              <tbody>
+                <% @items.each do |item| %>
+                  <tr>
+                    <td><%= item.original_price %></td>
+                    <td>
+                      <%= form_for [:administration, item] do |f| %>
+                        <div class="field col-lg-4 col-sm-12 mt-3 mb-4">
+                          <%= f.number_field :discount_percentage, class:"form-control" %> 
+                        </div>
+                    </td>
+                    <td><%= item.price %></td>
+                    <td>
+                      <div class="actions mt-4 mb-3">
+                        <%= f.submit "Modifier la réduction", class:"btn btn-primary mb-2" %>
+                      </div>
+                     <% end %>
+                    </td>
+                  </tr>
+                <% end %>
 							</tbody>
 						</table>
 					</div>
