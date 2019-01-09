@@ -8,6 +8,13 @@ RSpec.describe Administration::ItemsController, type: :controller do
       get :index
       expect(response).to have_http_status(:success)
     end
+
+    it "assigns items in order to template" do
+      item1 = FactoryBot.create(:item, name: "Africa")
+      item2 = FactoryBot.create(:item, name: "Rains down")
+      get :index
+      expect(assigns(:items)).to match_array([item1, item2])
+    end
   end
 
   describe "PUT #update/:id" do
