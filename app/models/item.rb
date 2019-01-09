@@ -14,9 +14,14 @@
 #
 
 class Item < ApplicationRecord
+  has_many :categorizations, dependent: :destroy
+  has_many :categories, -> { distinct }, through: :categorizations
+
   validates :original_price, presence: true
   validates :discount_percentage, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validates :name, presence: true
+
+  scope :alphabetical_order, -> { order(name: :asc) }
 
   def price
     original_price unless has_discount

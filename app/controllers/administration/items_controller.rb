@@ -3,7 +3,7 @@
 module Administration
   class ItemsController < AdministrationController
     def index
-      @items = Item.all
+      @items = Item.all.alphabetical_order
     end
 
     def update
