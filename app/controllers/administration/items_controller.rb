@@ -9,7 +9,7 @@ module Administration
     def update
       item = Item.find(params[:id])
       item.update(item_params)
-      redirect_to administration_items_path
+      redirect_to administration_items_path, notice: 'Le prix a bien été modifié'
     end
 
     private
