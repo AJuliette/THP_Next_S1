@@ -10,6 +10,7 @@
 #  discount_percentage :integer          default(0)
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  name                :string
 #
 
 require 'rails_helper'
@@ -28,7 +29,27 @@ RSpec.describe Item, type: :model do
     end
   end
 
+  describe 'Item' do
+    context 'when testing validations' do
+      it { is_expected.to validate_presence_of(:name) }
+    end
+  end
+
   describe 'Price' do
+    context "when testing validations" do
+      it { is_expected.to validate_presence_of(:original_price) }
+
+      it "can't have a negative discount" do
+        item = FactoryBot.build(:item_with_discount, discount_percentage: -1)
+        expect(item).not_to be_valid
+      end
+
+      it "can't have a discout percentage above 100" do
+        item = FactoryBot.build(:item_with_discount, discount_percentage: 101)
+        expect(item).not_to be_valid
+      end
+    end
+
     context 'when the item has a discount' do
       let(:item) { build(:item_with_discount, original_price: 100.00, discount_percentage: 20) }
 
@@ -41,22 +62,17 @@ RSpec.describe Item, type: :model do
       it { expect(item.price).to eq(100.00) }
     end
 
-    it { is_expected.to validate_presence_of(:original_price) }
+    describe "when testing method average_prices" do
+      it 'gives the average price with different items' do
+        FactoryBot.create(:item_without_discount, original_price: 20)
+        FactoryBot.create(:item_without_discount, original_price: 10)
+        expect(Item.average_price).to eq(15.0)
+      end
 
-    it "can't have a negative discount" do
-      item = FactoryBot.build(:item_with_discount, discount_percentage: -1)
-      expect(item).not_to be_valid
-    end
-
-    it "can't have a discout percentage above 100" do
-      item = FactoryBot.build(:item_with_discount, discount_percentage: 101)
-      expect(item).not_to be_valid
-    end
-
-    it 'gives the average price' do
-      FactoryBot.create(:item_without_discount, original_price: 20)
-      FactoryBot.create(:item_without_discount, original_price: 10)
-      expect(Item.average_price).to eq(15.0)
+      it 'gives the average price for one' do
+        FactoryBot.create(:item_without_discount, original_price: 20)
+        expect(Item.average_price).to eq(20.0)
+      end
     end
   end
 end
