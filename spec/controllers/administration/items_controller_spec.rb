@@ -28,4 +28,52 @@ RSpec.describe Administration::ItemsController, type: :controller do
       it { expect(response).to have_http_status(:success) }
     end
   end
+
+  describe "PUT update" do
+    let(:item) { FactoryBot.create(:item) }
+    let(:item_with_discount) { FactoryBot.create(:item, original_price: 20) }
+    let(:item_without_discount) { FactoryBot.create(:item_without_discount, original_price: 10) }
+
+    context "with valid data" do
+      let(:discount) { { discount_percentage: 50 } }
+
+      it "redirects to administration items" do
+        put :update, params: { id: item, item: discount }
+        expect(response).to redirect_to(administration_items_path)
+      end
+
+      it "updates item with discount in the database" do
+        put :update, params: { id: item_with_discount, item: discount }
+        item_with_discount.reload
+        expect(item_with_discount.price).to eq(10)
+      end
+
+      it "updates item without discount in the database" do
+        put :update, params: { id: item_without_discount, item: discount }
+        item_without_discount.reload
+        expect(item_without_discount.price).to eq(5)
+      end
+
+      it "updates attribute has_discount to true" do
+        put :update, params: { id: item_without_discount, item: discount }
+        item_without_discount.reload
+        expect(item_without_discount.has_discount).to eq true
+      end
+    end
+
+    context "with invalid data" do
+      let(:invalid_discount) { { discount_percentage: -1 } }
+
+      it "renders administration page" do
+        put :update, params: { id: item_with_discount, item: invalid_discount }
+        expect(response).to redirect_to(administration_items_path)
+      end
+
+      it "doesn't update item in the database" do
+        put :update, params: { id: item_with_discount, item: invalid_discount }
+        item_with_discount.reload
+        expect(item_with_discount.discount_percentage).not_to eq(-1)
+      end
+    end
+  end
 end
