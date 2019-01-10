@@ -14,6 +14,8 @@
 #
 
 class Item < ApplicationRecord
+  before_update :discount_to_true?
+
   has_many :categorizations, dependent: :destroy
   has_many :categories, -> { distinct }, through: :categorizations
 
@@ -25,8 +27,7 @@ class Item < ApplicationRecord
 
   def price
     original_price unless has_discount
-    new_price = original_price * (1 - (discount_percentage.to_f / 100))
-    new_price.round(2)
+    (original_price * (1 - (discount_percentage.to_f / 100))).round(2)
   end
 
   def self.average_price
@@ -35,5 +36,9 @@ class Item < ApplicationRecord
       sum += i.price
     end
     (sum / Item.count)
+  end
+
+  def discount_to_true?
+    self.has_discount = true
   end
 end

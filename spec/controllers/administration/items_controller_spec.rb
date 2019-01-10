@@ -10,10 +10,11 @@ RSpec.describe Administration::ItemsController, type: :controller do
     end
 
     it "assigns items in order to template" do
-      item1 = FactoryBot.create(:item, name: "Africa")
-      item2 = FactoryBot.create(:item, name: "Rains down")
+      item1 = FactoryBot.create(:item, name: "Rains Down")
+      item2 = FactoryBot.create(:item, name: "In")
+      item3 = FactoryBot.create(:item, name: "Africa")
       get :index
-      expect(assigns(:items)).to match_array([item1, item2])
+      expect(assigns(:items)).to match_array([item3, item2, item1])
     end
   end
 
