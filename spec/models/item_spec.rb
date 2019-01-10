@@ -32,6 +32,7 @@ RSpec.describe Item, type: :model do
   describe 'Item' do
     context 'when testing validations' do
       it { is_expected.to validate_presence_of(:name) }
+      it { is_expected.to validate_presence_of(:original_price) }
     end
 
     context 'when testing associations' do
@@ -40,20 +41,6 @@ RSpec.describe Item, type: :model do
   end
 
   describe 'Price' do
-    context "when testing validations" do
-      it { is_expected.to validate_presence_of(:original_price) }
-
-      it "can't have a negative discount" do
-        item = FactoryBot.build(:item_with_discount, discount_percentage: -1)
-        expect(item).not_to be_valid
-      end
-
-      it "can't have a discout percentage above 100" do
-        item = FactoryBot.build(:item_with_discount, discount_percentage: 101)
-        expect(item).not_to be_valid
-      end
-    end
-
     context 'when the item has a discount' do
       let(:item) { build(:item_with_discount, original_price: 100.00, discount_percentage: 20) }
 
@@ -77,6 +64,32 @@ RSpec.describe Item, type: :model do
         FactoryBot.create(:item_without_discount, original_price: 20)
         expect(Item.average_price).to eq(20.0)
       end
+    end
+  end
+
+  describe 'Discount percentage' do
+    it "can't have a negative discount" do
+      item = FactoryBot.build(:item_with_discount, discount_percentage: -1)
+      expect(item).not_to be_valid
+    end
+
+    it "can't have a discout percentage above 100" do
+      item = FactoryBot.build(:item_with_discount, discount_percentage: 101)
+      expect(item).not_to be_valid
+    end
+  end
+
+  describe 'Has discount' do
+    it "can update has_discount to true" do
+      item = FactoryBot.create(:item_without_discount)
+      item.discount_to_true
+      expect(item.has_discount).to eq true
+    end
+
+    it "don't turn has_discount to false" do
+      item = FactoryBot.create(:item_with_discount)
+      item.discount_to_true
+      expect(item.has_discount).to eq true
     end
   end
 end

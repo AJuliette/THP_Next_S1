@@ -14,7 +14,7 @@
 #
 
 class Item < ApplicationRecord
-  before_update :discount_to_true?
+  before_update :discount_to_true
 
   has_many :categorizations, dependent: :destroy
   has_many :categories, -> { distinct }, through: :categorizations
@@ -35,10 +35,10 @@ class Item < ApplicationRecord
     Item.all.find_each do |i|
       sum += i.price
     end
-    (sum / Item.count)
+    sum / Item.count
   end
 
-  def discount_to_true?
+  def discount_to_true
     self.has_discount = true
   end
 end
