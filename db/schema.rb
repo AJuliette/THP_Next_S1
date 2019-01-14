@@ -23,8 +23,8 @@ ActiveRecord::Schema.define(version: 2019_01_09_131809) do
   end
 
   create_table "categorizations", force: :cascade do |t|
-    t.bigint "item_id"
-    t.bigint "category_id"
+    t.bigint "item_id", null: false
+    t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_categorizations_on_category_id"
@@ -34,11 +34,11 @@ ActiveRecord::Schema.define(version: 2019_01_09_131809) do
 
   create_table "items", force: :cascade do |t|
     t.float "original_price", null: false
+    t.string "name", null: false
     t.boolean "has_discount", default: false
     t.integer "discount_percentage", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "name"
   end
 
 end

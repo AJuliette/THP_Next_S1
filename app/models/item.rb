@@ -14,16 +14,18 @@
 #
 
 class Item < ApplicationRecord
-  before_update :discount_to_true
+  before_update :update_discount
 
   has_many :categorizations, dependent: :destroy
   has_many :categories, -> { distinct }, through: :categorizations
 
   validates :original_price, presence: true
-  validates :discount_percentage, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+  validates :discount_percentage, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validates :name, presence: true
 
   scope :alphabetical_order, -> { order(name: :asc) }
+  scope :has_discount, -> { where has_discount: true }
+  scope :no_discount, -> { where has_discount: false }
 
   def price
     original_price unless has_discount
@@ -31,14 +33,18 @@ class Item < ApplicationRecord
   end
 
   def self.average_price
-    sum = 0
-    Item.all.find_each do |i|
-      sum += i.price
+    if count.zero?
+      nil
+    else
+      sum = 0
+      all.find_each do |i|
+        sum += i.price
+      end
+      sum / count
     end
-    sum / Item.count
   end
 
-  def discount_to_true
+  def update_discount
     self.has_discount = true
   end
 end
