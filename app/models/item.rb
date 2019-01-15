@@ -14,7 +14,7 @@
 #
 
 class Item < ApplicationRecord
-  after_update :update_discount
+  before_update :update_discount
 
   has_many :categorizations, dependent: :destroy
   has_many :categories, -> { distinct }, through: :categorizations
@@ -46,6 +46,5 @@ class Item < ApplicationRecord
 
   def update_discount
     self.has_discount = true
-    save
   end
 end

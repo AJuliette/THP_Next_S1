@@ -3,6 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe Administration::ItemsController, type: :controller do
+  let(:admin) { create(:admin) }
+
+  before do
+    admin.confirm
+    sign_in admin
+  end
+
   describe "GET #index" do
     it "returns http success" do
       get :index
