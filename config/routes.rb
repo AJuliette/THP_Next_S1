@@ -10,4 +10,20 @@ Rails.application.routes.draw do
 
     resources :items
   end
+
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    confirmations: 'users/confirmations',
+    registrations: 'users/registrations',
+    passwords: 'users/passwords',
+    unlocks: 'users/unlocks'
+  }
+
+  devise_for :admins, controllers: {
+    sessions: 'admins/sessions',
+    confirmations: 'admins/confirmations',
+    registrations: 'admins/registrations',
+    passwords: 'admins/passwords',
+    unlocks: 'admins/unlocks'
+  }
 end
