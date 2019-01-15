@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     unlocks: 'users/unlocks'
   }
 
-  devise_for :admins, controllers: {
+  devise_for :admin, controllers: {
     sessions: 'admins/sessions',
     confirmations: 'admins/confirmations',
     registrations: 'admins/registrations',
