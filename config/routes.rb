@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   get '/home', to: 'home#landing_page'
 
+  get 'send_offer/create', to: 'sendoffer#create'
+
   namespace 'administration' do
     get '/', to: 'items#index'
 
