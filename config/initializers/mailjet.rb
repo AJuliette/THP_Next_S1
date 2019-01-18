@@ -3,5 +3,5 @@
 Mailjet.configure do |config|
   config.api_key = Rails.application.credentials.MAILJET_API_KEY
   config.secret_key = Rails.application.credentials.MAILJET_SECRET_KEY
-  config.default_from = 'juliette.audema@gmail.com'
+  config.default_from = Rails.application.credentials.MAIL
 end
