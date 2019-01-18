@@ -3,6 +3,6 @@
 class SendOfferController < ApplicationController
   def create
     user = User.find(params[:id])
-    OfferMailer.offer(user).deliver_later
+    user.send_email_offer
   end
 end
